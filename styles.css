@@ -1,0 +1,340 @@
+*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;background:#eef2f7;color:#182538}.toolbar{background:#122c50;color:white;padding:14px 24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}.toolbar strong{margin-right:auto}button{border:0;border-radius:6px;padding:10px 14px;cursor:pointer;background:#1865c1;color:white;font-weight:600}button.secondary{background:#dce6f3;color:#183454}.wrap{max-width:1150px;margin:22px auto;padding:0 12px}.panel{background:white;border-radius:10px;padding:20px;margin-bottom:16px;box-shadow:0 2px 12px #122c5012}h2{font-size:17px;margin:0 0 15px}.fields{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}label{font-size:12px;font-weight:600;display:block}input,textarea,select{width:100%;border:1px solid #c8d2df;border-radius:5px;padding:9px;margin-top:5px;font:inherit;background:white}textarea{min-height:70px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #c8d2df;padding:6px;text-align:left}th{font-size:12px;background:#eaf1fa}td input{margin:0;padding:7px;min-width:65px}td .money{text-align:right}.scroll{overflow-x:auto}.totals{margin-left:auto;max-width:340px}.totals div{display:flex;justify-content:space-between;padding:7px;border-bottom:1px solid #ddd}.totals .grand{font-size:19px;font-weight:700;background:#eaf1fa}.hint{color:#596b80;font-size:12px}.print-sheet{display:none}#savedList{margin-top:10px}#savedList button{margin:4px}
+@media(max-width:800px){.fields{grid-template-columns:repeat(2,1fr)}}
+/* Responsive billing workspace */
+html { -webkit-text-size-adjust: 100%; }
+body { min-width: 320px; }
+.toolbar { position: relative; }
+.toolbar button { white-space: nowrap; }
+.fields label { min-width: 0; }
+.fields input, .fields select, .fields textarea { min-width: 0; }
+.scroll { width: 100%; -webkit-overflow-scrolling: touch; }
+#items th, #items td { text-align: center; vertical-align: middle; }
+#items input, #items select { text-align: center; }
+#items .desc { text-align: center; min-width: 180px; }
+#items .hsn { min-width: 95px; }
+#items .tax { min-width: 72px; }
+#items .qty, #items .rate, #items .disc { min-width: 78px; }
+#items .taxable { text-align: center; white-space: nowrap; }
+.totals { width: 100%; }
+@media (max-width: 800px) {
+  .wrap { margin: 14px auto; }
+  .panel { padding: 14px; }
+  .toolbar { padding: 12px; }
+  .toolbar strong { flex: 1 0 100%; }
+}
+@media (max-width: 560px) {
+  .fields { grid-template-columns: 1fr; }
+  .toolbar button { flex: 1 1 calc(50% - 8px); }
+  .totals { max-width: none; }
+  .totals .grand { font-size: 17px; }
+  .panel h2 { font-size: 16px; }
+}
+/* A4 invoice */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 7mm;
+  }
+
+  html, body {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    color: #18212b;
+  }
+
+  .toolbar, .wrap {
+    display: none;
+  }
+
+  .print-sheet {
+    display: block;
+  }
+
+  .invoice {
+    --rule: #56616d;
+    --columns: 5% 31% 12% 8% 8% 10% 9% 17%;
+    border: 1px solid var(--rule);
+    font: 9.5pt/1.35 Arial, "Liberation Sans", sans-serif;
+    letter-spacing: 0.01em;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .invoice header {
+    padding: 3mm 4mm 4mm;
+    border-bottom: 1px solid var(--rule);
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  .invoice .original-copy {
+    text-align: right;
+    font-size: 8pt;
+  }
+
+  .invoice header h1 {
+    margin: 0.5mm 0 1mm;
+    font-size: 16pt;
+    line-height: 1.2;
+    letter-spacing: 0.025em;
+  }
+
+  .invoice .two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .invoice .two > div {
+    min-width: 0;
+    padding: 2.5mm 3mm;
+    overflow-wrap: anywhere;
+  }
+
+  .invoice .two > div + div {
+    border-left: 1px solid var(--rule);
+  }
+
+  .invoice .party-name {
+    font-weight: 700;
+  }
+
+  .invoice table {
+    table-layout: fixed;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .invoice table th,
+  .invoice table td {
+    padding: 1.4mm 1.5mm;
+    border: 1px solid var(--rule);
+    background: #fff;
+    color: inherit;
+    font-size: inherit;
+    text-align: center;
+    vertical-align: top;
+    overflow-wrap: anywhere;
+  }
+
+  .invoice table th {
+    background: #eef2f5;
+    font-size: 8.5pt;
+    vertical-align: middle;
+  }
+
+  .invoice tr,
+  .invoice header,
+  .invoice .two,
+  .invoice .taxes-box,
+  .invoice .grand-line,
+  .invoice .words-line,
+  .invoice .bank,
+  .invoice .sign {
+    break-inside: avoid;
+  }
+
+  .invoice thead {
+    display: table-header-group;
+  }
+
+  .invoice table th:first-child,
+  .invoice table td:first-child {
+    border-left: 0;
+  }
+
+  .invoice table th:last-child,
+  .invoice table td:last-child {
+    border-right: 0;
+  }
+
+  .invoice .items-table tbody tr:not(:last-child) > td {
+    border-bottom: 0;
+  }
+
+  .invoice .items-table tbody tr + tr > td {
+    border-top: 0;
+  }
+
+  .invoice .items-table th:nth-child(1) { width: 5%; }
+  .invoice .items-table th:nth-child(2) { width: 31%; }
+  .invoice .items-table th:nth-child(3) { width: 12%; }
+  .invoice .items-table th:nth-child(4) { width: 8%; }
+  .invoice .items-table th:nth-child(5) { width: 8%; }
+  .invoice .items-table th:nth-child(6) { width: 10%; }
+  .invoice .items-table th:nth-child(7) { width: 9%; }
+  .invoice .items-table th:nth-child(8) { width: 17%; }
+
+  .invoice .items-table :is(th, td) {
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .invoice .taxes-box {
+    border-bottom: 1px solid var(--rule);
+    padding: 1.5mm 0;
+  }
+
+  .invoice .tax-add {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 34mm 9% 17%;
+    align-items: center;
+    padding: 0.3mm 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .invoice .tax-add span:first-child {
+    grid-column: 2;
+    text-align: left;
+  }
+
+  .invoice .tax-add span:nth-child(n + 2) {
+    text-align: right;
+    padding-right: 1.5mm;
+  }
+
+  .invoice .grand-line {
+    display: grid;
+    grid-template-columns: var(--columns);
+    align-items: stretch;
+    background: #eef2f5;
+    border-bottom: 1px solid var(--rule);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .invoice .grand-line > * {
+    padding: 1.5mm;
+    overflow-wrap: anywhere;
+  }
+
+  .invoice .grand-line b {
+    grid-column: 1 / 5;
+    text-align: center;
+  }
+
+  .invoice #printQty {
+    text-align: right;
+  }
+
+  .invoice #printGrand {
+    grid-column: 8;
+    border-left: 1px solid var(--rule);
+    text-align: center;
+  }
+
+  .invoice .tax-summary :is(th, td) {
+    border: 0;
+    background: #fff;
+  }
+
+  .invoice .tax-summary th {
+    border-bottom: 1px solid #c8cfd6;
+  }
+
+  .invoice .words-line {
+    border-top: 1px solid var(--rule);
+    padding: 2mm 3mm;
+    font-weight: 700;
+  }
+
+  .invoice .bank {
+    border-block: 1px solid var(--rule);
+    padding: 2mm 3mm;
+    text-align: center;
+    font-size: 8.5pt;
+  }
+
+  .invoice .bank-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    align-items: start;
+    gap: 2mm;
+    margin-top: 1mm;
+    overflow-wrap: anywhere;
+  }
+
+  .invoice .bank-row span:first-child {
+    text-align: left;
+  }
+
+  .invoice .bank-row span:last-child {
+    text-align: right;
+  }
+
+  .invoice .sign {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: minmax(12mm, auto) auto;
+    font-size: 8.5pt;
+  }
+
+  .invoice .sign > div {
+    padding: 1.5mm 3mm;
+  }
+
+  .invoice .receiver {
+    grid-area: 1 / 2;
+    border-left: 1px solid var(--rule);
+    font-weight: 700;
+  }
+
+  .invoice .company-sign {
+    grid-area: 2 / 2;
+    border-left: 1px solid var(--rule);
+    text-align: right;
+    font-weight: 700;
+  }
+
+  .invoice .authorized {
+    grid-area: 1 / 1;
+  }
+}
+
+
+/* GST-Billing Cloud Login */
+
+.cloud-login {
+  max-width: 480px;
+  margin: 20px auto;
+  padding: 22px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.cloud-login h2 {
+  margin: 0 0 18px;
+  font-size: 20px;
+  color: #122c50;
+}
+
+.cloud-login-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cloud-login-fields input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+}
+
+.cloud-login-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.cloud-login #loginStatus {
+  margin-bottom: 0;
+  font-size: 14px;
+}
+
+@media (max-width: 520px) {
+  .cloud-login {
+    margin: 12px;
+    padding: 16px;
+  }
+}
+

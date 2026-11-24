@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#122c50">
+  <title>AL-MUMIN GST Billing</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+</head>
+<body>
+
+
+<div class="toolbar"><strong>AL-MUMIN GROUPS | GST Billing</strong>
+  <button onclick="startNewInvoice()" class="secondary">New Invoice</button>
+  <button onclick="saveInvoice()">Save Invoice</button>
+  <button onclick="window.print()">Print / Save PDF</button>
+  <button onclick="loadList()" class="secondary">Saved Invoices</button>
+  <button onclick="exportInvoices()" class="secondary">Backup Invoices</button>
+  <button onclick="$('backupInput').click()" class="secondary">Import Backup</button>
+  <input id="backupInput" type="file" accept=".json,application/json" style="display:none" onchange="importInvoices(this)">
+</div>
+  <main class="wrap">
+    <section class="panel">
+      <h2>Invoice & Customer Details</h2>
+      <div class="fields">
+        <label>Invoice Number<input id="invoice" value="AR/0/26-27"></label>
+        <label>Invoice Date<input id="date" type="date"></label>
+        <label>Customer Name<input id="customer"></label>
+        <label>Customer GSTIN<input id="gstin"></label>
+        <label>Customer Address<textarea id="address"></textarea></label>
+        <label>Customer Email<input id="email" type="email"></label>
+        <label>Mobile Number<input id="mobile"></label>
+        <label>Place of Supply<input id="supply" placeholder="Maharashtra"></label>
+        <label>Transport<input id="transport"></label>
+        <label>E-Way Bill No.<input id="eway"></label>
+        <label>PO No.<input id="po"></label><label>Reverse Charge<select id="reverse"><option>No</option><option>Yes</option></select></label>
+      </div>
+    </section>
+    <section class="panel">
+      <h2>Products / Services</h2>
+      <div class="scroll"><table><thead><tr><th>#</th><th style="min-width:210px">Description</th><th>HSN/SAC</th><th>GST %</th><th>Qty</th><th>MRP / Rate ₹</th><th>Discount %</th><th>Taxable ₹</th><th></th></tr></thead><tbody id="items"></tbody></table>
+      </div>
+      <p><button onclick="addRow();queueDraftSave()">+ Add Product</button></p><p class="hint">MRP includes GST. Discount is applied first, then the included GST is separated into taxable amount + CGST (half) + SGST (half).</p>
+    </section><section class="panel"><h2>Invoice Total</h2>
+      <div class="totals">
+        <div><span>Taxable Amount</span><b id="subtotal">₹0.00</b>
+        </div><div><span>CGST</span><b id="cgst">₹0.00</b></div><div><span>SGST</span><b id="sgst">₹0.00</b></div><div><span>Rounded Off</span><b id="roundoff">₹0.00</b></div><div class="grand"><span>Grand Total</span><b id="grand">₹0.00</b></div></div><p><b>In words:</b> <span id="words"></span></p></section><section class="panel"><h2>Saved Invoices</h2><p id="syncStatus" class="hint" role="status">Connecting to Supabase…</p><div id="savedList" class="hint"></div></section></main><div class="print-sheet"><article class="invoice"><header><div class="original-copy">Original For Buyer</div><b>Tax Invoice</b><h1>AL-MUMIN GROUPS PVT. LTD.</h1><div>Al Noor apartment, 2nd floor room number 202, behind Sitara bakery, Virar road, nalasopara East</div><div>District: Palghar, Maharashtra - 401209</div><b>GST Number: 27ABECA3393AIZY</b><div>Tel.: 91-8007710386 / email: aeronprofessional786@gmail.com</div></header><div class="two"><div id="printCustomer"></div><div id="printMeta"></div></div><table class="items-table"><thead><tr><th>S.N.</th><th>Description of Goods</th><th>HSN/SAC</th><th>Tax %</th><th>Qty.</th><th>MRP</th><th>Disc %</th><th>Taxable Amount (₹)</th></tr></thead><tbody id="printRows"></tbody></table><div class="taxes-box"><div id="printTaxes"></div></div><div class="grand-line"><b>Grand Total</b><span id="printQty"></span><strong id="printGrand"></strong></div><table class="tax-summary"><thead><tr><th>Tax Rate</th><th>Taxable Amt.</th><th>CGST Amt.</th><th>SGST Amt.</th><th>Total Tax</th></tr></thead><tbody id="printTaxSummary"></tbody></table><div class="words-line">In words: &nbsp;<span id="printWords"></span></div><div class="bank"><b>BANK DETAILS</b><div class="bank-row"><span>Bank Name : HDFC BANK</span><span>Branch &amp; IFS Code : NALASOPARA EAST &amp; HDFC0001808</span><span>A/c No. : 50200118045871</span></div></div><div class="sign"><div class="receiver">Receiver's Signature &nbsp; :</div><div class="company-sign">AL-MUMIN GROUPS PVT. LTD</div><div class="authorized">Authorised Signatory</div></div></article></div>  
+        
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script src="supabase-config.js" defer></script>
+<script src="script.js" defer></script>
+</body>
+</html>
